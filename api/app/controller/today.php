@@ -1,0 +1,4 @@
+<?php
+
+    $array['command'] = "today";
+
