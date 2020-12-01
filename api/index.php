@@ -2,6 +2,7 @@
 
 const KOROVNIK_IP = '10.8.0.66';
 const COMMAND_URL = 'naumovich/command.php?command=';
+const API_URL = 'naumovich/api.php?command=';
 const GET_FILE_URL = 'naumovich/get_file.php?name=';
 
 const PATH_OF_LOG_FILES = '/var/log';
@@ -12,6 +13,7 @@ $array = '';
 
 include './app/controller/check_korovnik_reach.php';
 include_once './app/model/load_file_from_korovnik.php';
+include_once './app/model/load_state_of_heater.php';
 
 if ($array['korovnikIsAlive'] == true ) {
     include_once './app/model/get_controller_names_array.php';
