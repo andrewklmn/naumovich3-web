@@ -1,3 +1,39 @@
 body {
-  background-color: lightgray;
+  margin: 0;
+  padding: 0;
+
+  background-color: #c5c6c6;
+}
+
+.state {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.state > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+}
+
+.state p {
+  margin: 0;
+  padding: 0;
+}
+
+.pomp-icon {
+  height: 44px;
+  background: url(images/pomp_off.gif) no-repeat center;
+}
+
+.heater-icon {
+  height: 44px;
+  background: url(images/heater_off.gif) no-repeat center;
+}
+
+.outdoor-icon {
+  height: 44px;
+  background: url(images/outside_temp.png) no-repeat center;  
 }
