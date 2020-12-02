@@ -5,6 +5,12 @@ body {
   background-color: #c5c6c6;
 }
 
+.renters-temp {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
 .state {
   display: flex;
   flex-direction: row;
@@ -27,10 +33,17 @@ body {
   height: 44px;
   background: url(images/pomp_off.gif) no-repeat center;
 }
+.pomp-icon.on {
+  background: url(images/pomp_on.gif) no-repeat center;
+}
 
 .heater-icon {
   height: 44px;
   background: url(images/heater_off.gif) no-repeat center;
+}
+
+.heater-icon.on {
+  background: url(images/heater_on.gif) no-repeat center;
 }
 
 .outdoor-icon {
