@@ -1,6 +1,7 @@
 const API_URL = 'http://litos.kiev.ua/naumovich/api/';
 
-const refreshingPeriodInSec = 10;
+const refreshingPeriodInSec = 5;
+const refreshingAfterError = 1;
 
 const renterSection = document.querySelector('.renters-temp');
 const fasmebTemp = renterSection.querySelector('.fasmeb-temp');
@@ -62,16 +63,15 @@ const getheaterParams = (state)=> {
         drawheaterParams(state);
         showInfo('pong');
         clearInfo();
+        setTimeout(()=>getheaterParams(state), refreshingPeriodInSec*1000 );
       } else {
         showInfo(stateOfHeater);
-        clearInfo();
+        setTimeout(()=>getheaterParams(state), refreshingAfterError*1000 );
       }
-      setTimeout(()=>getheaterParams(state), refreshingPeriodInSec*1000 );
     })
     .catch(function() {
-      showInfo('Network error!');
-      clearInfo();
-      setTimeout(()=>getheaterParams(state), refreshingPeriodInSec*1000 );
+      showInfo('<span style="color:red;">Network error!</span>');
+      setTimeout(()=>getheaterParams(state), refreshingAfterError*1000 );
     });
 }
 
