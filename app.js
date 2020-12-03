@@ -1,4 +1,6 @@
-const API_URL = 'https://litos.kiev.ua/naumovich/api/';
+const API_URL = 'http://litos.kiev.ua/naumovich/api/';
+
+const refreshingPeriodInSec = 10;
 
 const renterSection = document.querySelector('.renters-temp');
 const fasmebTemp = renterSection.querySelector('.fasmeb-temp');
@@ -28,14 +30,16 @@ const state = {
   heaterParams: {},
 };
 
-const state_indexes = 'configRAM|configROM|currentMode|out_s0|litos_s1|mebel_s2|hot_s3|back_s4|outdoorTemp|fasmebTemp|ruslanTemp|heaterTemp|pompTemp|pompOff|heaterOff'.split("|");
+const state_indexes = 'configRAM|configROM|currentMode|out_s0|litos_s1|mebel_s2|hot_s3|back_s4|outdoorTemp|ruslanTemp|fasmebTemp|heaterTemp|pompTemp|pompOff|heaterOff'.split("|");
 
 const getheaterParams = (state)=> {
   fetch(API_URL + apiCommands.GET_STATE)
     .then(response => response.json())
     .then((json) => {
       const {stateOfHeater} = json; 
-      if (stateOfHeater != "Bad request") {
+      if (stateOfHeater!=null 
+            && stateOfHeater != "Bad request"
+            && stateOfHeater != "T") {
         const state_values = stateOfHeater.split('|');
         state_indexes.forEach((index_name, index)=>{
           state.heaterParams[index_name] = state_values[index];
@@ -44,9 +48,11 @@ const getheaterParams = (state)=> {
       } else {
         showInfo(stateOfHeater)
       }
+      setTimeout(()=>getheaterParams(state), refreshingPeriodInSec*1000 );
     })
     .catch(function() {
       showInfo('Network error');
+      setTimeout(()=>getheaterParams(state), refreshingPeriodInSec*1000 );
     });
 }
 

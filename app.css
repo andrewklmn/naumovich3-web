@@ -1,27 +1,123 @@
 body {
   margin: 0;
   padding: 0;
+  margin-left: auto;
+  margin-right: auto;
 
-  background-color: #c5c6c6;
+  font-family: 'Times New Roman', Times, serif;
+  max-width: 500px;
+  min-height: 600px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 0;
+
+  margin: 0;
+  padding: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: #aebdfd;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 70px;
+  grid-template-rows: 50px 50px 30px;
+  gap: 0px 0px;
+  grid-template-areas:
+    "header-1 header-1 header-2"
+    "header-1 header-1 header-2"
+    "header-3 header-3 header-2";
+    align-content: center;
+  height: 150px;
+  background-color: #aebdfd;
+}
+.header-1 { 
+  grid-area: header-1; 
+  font-weight: bold;
+  align-self: center;
+
+  padding-left: 10px;
+  
+  font-size: 60px;
+
+  border-bottom: thin solid white;
+  text-align: left;
+  color: #16186f;
+}
+.header-2 { 
+  grid-area: header-2; 
+
+  padding-right: 10px;
+  align-self: center;
+
+  font-size: 146px;
+  font-weight: bold;
+  text-align: right;
+
+  color: white;
+  overflow: hidden;
+}
+.header-3 { 
+  grid-area: header-3; 
+  padding-left: 15px;
+  
+  font-size: 26px;
+  text-align: left;
+  letter-spacing: 0.3em;
+
+  color: #16186f;
+  overflow: hidden;
 }
 
 .renters-temp {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  padding-top: 30px;
+
+  height: 230px;
+
+  background: url(images/sosedi_letom.jpg);
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-color: #f5f8fd;
+
+  font-size: 1.3em;
+}
+
+.renters-temp > div {
+  margin: 0;
+  padding: 0;
+
+  text-align: center;
+}
+
+.renters-temp p {
+  margin: 0;
+  padding: 0;
 }
 
 .state {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+
+  padding-top: 10px;
+  padding-bottom: 10px;
+
+  background-color: #c5c6c6;
 }
 
 .state > div {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-
 }
 
 .state p {
@@ -50,3 +146,28 @@ body {
   height: 44px;
   background: url(images/outside_temp.png) no-repeat center;  
 }
+
+.info{
+  background-color: #aebdfd;
+  height: 30px;
+}
+
+@media screen and (max-width: 450px) {
+  .header-1 { 
+    padding-top: 40px;
+    font-size: 10vw;
+  }
+  .header-3 {
+    font-size: 21px;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .header-1 { 
+    padding-top: 50px;
+    font-size: 12vw;
+  }
+  .header-3 {
+    font-size: 16px;
+  }
+ }
