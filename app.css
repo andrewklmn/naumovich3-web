@@ -169,6 +169,8 @@ body {
   color: #444343;
   background-color: #c5c6c6;
   text-align: center;
+
+  border-top: white thin solid;
 }
 
 @media screen and (max-width: 450px) {

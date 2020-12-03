@@ -8,7 +8,6 @@ function load_state_of_heater(){
     
     $state = json_decode(file_get_contents($url));
     
-    
     return $state->answer;
 }
 

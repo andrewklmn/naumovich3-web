@@ -1,6 +1,6 @@
 const API_URL = 'http://litos.kiev.ua/naumovich/api/';
 
-const refreshingPeriodInSec = 5;
+const refreshingPeriodInSec = 10;
 const refreshingAfterError = 1;
 
 const renterSection = document.querySelector('.renters-temp');
