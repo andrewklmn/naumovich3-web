@@ -15,7 +15,7 @@ const heaterTemp = stateSection.querySelector('.heater-temp');
 const outdoorTemp = stateSection.querySelector('.outdoor-temp');
 
 const modeValue = document.querySelector('.mode-value');
-const givenTemp = document.querySelector('.given-temp');
+const givenTempSetter = document.querySelector('.given-temp');
 const info = document.querySelector('.info');
 
 const apiCommands = {
@@ -52,7 +52,7 @@ const getheaterParams = (state)=> {
   fetch(API_URL + apiCommands.GET_STATE)
     .then(response => response.json())
     .then((json) => {
-      const {stateOfHeater} = json; 
+      const {stateOfHeater, givenTemp} = json; 
       if (stateOfHeater!=null 
             && stateOfHeater != "Bad request"
             && stateOfHeater != "T") {
@@ -61,6 +61,7 @@ const getheaterParams = (state)=> {
           state.heaterParams[index_name] = state_values[index];
         });  
         drawheaterParams(state);
+        givenTempSetter.value = givenTemp;
         showInfo('pong');
         clearInfo();
         setTimeout(()=>getheaterParams(state), refreshingPeriodInSec*1000 );

@@ -9,6 +9,9 @@ const PATH_OF_LOG_FILES = '/var/log';
 const LOG_FILENAME = 'naumovich3.log';
 const STATE_LOG_FILENAME = 'naumovich3_states.log';
 
+const MIN_GIVEN_TEMP = 5; 
+const MAX_GIVEN_TEMP = 10;
+
 $array = '';
 
 include './app/controller/check_korovnik_reach.php';
