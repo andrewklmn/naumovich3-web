@@ -147,6 +147,15 @@ body {
   background: url(images/outside_temp.png) no-repeat center;  
 }
 
+.mode {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 10px;
+}
+
 .info{
   background-color: #aebdfd;
   height: 30px;
