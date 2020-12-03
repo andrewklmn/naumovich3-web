@@ -14,6 +14,7 @@ $array = '';
 include './app/controller/check_korovnik_reach.php';
 include_once './app/model/load_file_from_korovnik.php';
 include_once './app/model/load_state_of_heater.php';
+include_once './app/model/load_given_temp.php';
 
 if ($array['korovnikIsAlive'] == true ) {
     include_once './app/model/get_controller_names_array.php';
