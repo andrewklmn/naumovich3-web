@@ -13,6 +13,10 @@ const heaterIcon = stateSection.querySelector('.heater-icon');
 const heaterTemp = stateSection.querySelector('.heater-temp');
 const outdoorTemp = stateSection.querySelector('.outdoor-temp');
 
+const modeValue = document.querySelector('.mode-value');
+const givenTemp = document.querySelector('.given-temp');
+const info = document.querySelector('.info');
+
 const apiCommands = {
   GET_STATE: '',
   GET_TODAYS_LOG: '?today',
@@ -20,11 +24,11 @@ const apiCommands = {
   RUN_COMMAND: '?command=',
 };
 
-const heaterModes = {
-  OFF: 0,
-  ECO: 1,
-  STANDART: 2,
-}
+const heaterModes = [
+  'Off',
+  'Eco',
+  'Std',
+];
 
 const state = {
   heaterParams: {},
@@ -32,7 +36,18 @@ const state = {
 
 const state_indexes = 'configRAM|configROM|currentMode|out_s0|litos_s1|mebel_s2|hot_s3|back_s4|outdoorTemp|ruslanTemp|fasmebTemp|heaterTemp|pompTemp|pompOff|heaterOff'.split("|");
 
+const showInfo = (text)=> {
+  info.innerHTML = text;
+}
+
+const clearInfo = () => {
+  setTimeout(()=>{
+    info.innerHTML = '';
+  }, 2000);
+}
+
 const getheaterParams = (state)=> {
+  showInfo('<span style="color:white;">ping</span>');
   fetch(API_URL + apiCommands.GET_STATE)
     .then(response => response.json())
     .then((json) => {
@@ -45,13 +60,17 @@ const getheaterParams = (state)=> {
           state.heaterParams[index_name] = state_values[index];
         });  
         drawheaterParams(state);
+        showInfo('pong');
+        clearInfo();
       } else {
-        showInfo(stateOfHeater)
+        showInfo(stateOfHeater);
+        clearInfo();
       }
       setTimeout(()=>getheaterParams(state), refreshingPeriodInSec*1000 );
     })
     .catch(function() {
-      showInfo('Network error');
+      showInfo('Network error!');
+      clearInfo();
       setTimeout(()=>getheaterParams(state), refreshingPeriodInSec*1000 );
     });
 }
@@ -67,6 +86,7 @@ const drawheaterParams = ({heaterParams})=> {
   pompTemp.innerHTML = formatTemp(heaterParams, 'pompTemp');
   heaterTemp.innerHTML = formatTemp(heaterParams, 'heaterTemp');
   outdoorTemp.innerHTML = formatTemp(heaterParams, 'outdoorTemp');
+  modeValue.innerHTML = heaterModes[heaterParams.currentMode];
 
   if (heaterParams.pompOff == '0') {
     pompIcon.classList.add('on');
@@ -79,10 +99,6 @@ const drawheaterParams = ({heaterParams})=> {
   } else {
     heaterIcon.classList.remove('on');
   }
-}
-
-const showInfo = (text)=> {
-  console.log(text);
 }
 
 document.addEventListener('DOMContentLoaded',() => {
