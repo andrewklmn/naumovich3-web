@@ -114,7 +114,7 @@ const getHeaterParams = (state)=> {
           state.heaterParams[index_name] = state_values[index];
         });  
         drawheaterParams(state);
-        setGivenTemp(givenTemp);
+        if (!givenTempSetter.classList.contains('loading')) setGivenTemp(givenTemp);
         showInfo('pong');
         clearInfo();
         setTimeout(()=>getHeaterParams(state), refreshingPeriodInSec*1000 );
@@ -153,9 +153,7 @@ const postNewTemp = (temp, state) => {
       setGivenTemp(givenTemp);
       if (givenTemp != temp) {
         showInfo("<span style='color:red;'>Can't set this temp!</span>");
-      } else {
-        getHeaterParams(state);
-      }
+      };
       loaderImage.classList.add('hidden');
     })
     .catch(function() {
