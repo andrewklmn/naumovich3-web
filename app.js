@@ -15,6 +15,7 @@ const heaterTemp = stateSection.querySelector('.heater-temp');
 const outdoorTemp = stateSection.querySelector('.outdoor-temp');
 
 const modeValue = document.querySelector('.mode-value');
+const loaderImage = document.querySelector('.loader');
 const givenTempSetter = document.querySelector('.given-temp');
 const info = document.querySelector('.info');
 
@@ -22,7 +23,7 @@ const apiCommands = {
   GET_STATE: '',
   GET_TODAYS_LOG: '?today',
   GET_FULL_LOG: '?week',
-  RUN_COMMAND: '?command=',
+  SET_TEMP: '?temp=',
 };
 
 const MIN_GIVEN_TEMP = 5;
@@ -33,7 +34,7 @@ const GIVEN_TEMP_STEP = 0.2;
 const heaterModes = [
   'Off',
   'Eco',
-  'Std',
+  'High',
 ];
 
 const state = {
@@ -62,6 +63,8 @@ const setGivenTemp = (temp) => {
   //let tempOptions = givenTempSetter.querySelectorAll('option');
   state.givenTemp = givenTempSetter.value = temp;  
   givenTempSetter.disabled = false;
+  givenTempSetter.classList.remove('loading');
+  loaderImage.classList.add('hidden');
 }
 
 const drawheaterParams = ({heaterParams})=> {
@@ -95,8 +98,10 @@ const drawTempSetter = (min, max, step) => {
   }
 }
 
-const getheaterParams = (state)=> {
+const getHeaterParams = (state)=> {
   showInfo('<span style="color:white;">ping</span>');
+  loaderImage.classList.remove('hidden');
+
   fetch(API_URL + apiCommands.GET_STATE)
     .then(response => response.json())
     .then((json) => {
@@ -112,27 +117,55 @@ const getheaterParams = (state)=> {
         setGivenTemp(givenTemp);
         showInfo('pong');
         clearInfo();
-        setTimeout(()=>getheaterParams(state), refreshingPeriodInSec*1000 );
+        setTimeout(()=>getHeaterParams(state), refreshingPeriodInSec*1000 );
       } else {
         showInfo(stateOfHeater);
-        setTimeout(()=>getheaterParams(state), refreshingAfterError*1000 );
+        setTimeout(()=>getHeaterParams(state), refreshingAfterError*1000 );
       }
+      loaderImage.classList.add('hidden');
     })
     .catch(function() {
       showInfo('<span style="color:red;">Network error!</span>');
-      setTimeout(()=>getheaterParams(state), refreshingAfterError*1000 );
+      loaderImage.classList.add('hidden');
+      setTimeout(()=>getHeaterParams(state), refreshingAfterError*1000 );      
     });
 }
 
-const givenTempChangeHandler = (target, {givenTemp}) => {
+const givenTempChangeHandler = (target, state) => {
+  const {givenTemp} = state;
   if(target.value != ''
       && target.value != givenTemp ) {
-    console.log(target.value);
+
+    givenTempSetter.classList.add('loading');
+    givenTempSetter.disabled = true;
+
+    postNewTemp(target.value, state);
   }
 }
 
+const postNewTemp = (temp, state) => {
+  loaderImage.classList.remove('hidden');
+  
+  fetch(API_URL + apiCommands.SET_TEMP + temp)
+    .then(response => response.json())
+    .then((json) => {
+      const {givenTemp} = json; 
+      setGivenTemp(givenTemp);
+      if (givenTemp != temp) {
+        showInfo("<span style='color:red;'>Can't set this temp!</span>");
+      } else {
+        getHeaterParams(state);
+      }
+      loaderImage.classList.add('hidden');
+    })
+    .catch(function() {
+      showInfo('<span style="color:red;">Network error!</span>');
+      loaderImage.classList.add('hidden');
+    });
+};
+
 document.addEventListener('DOMContentLoaded',() => {
   drawTempSetter(MIN_GIVEN_TEMP, MAX_GIVEN_TEMP, GIVEN_TEMP_STEP);
-  getheaterParams(state);
-  givenTempSetter.addEventListener('click',({target}) => givenTempChangeHandler(target, state));
+  getHeaterParams(state);
+  givenTempSetter.addEventListener('change',({target}) => givenTempChangeHandler(target, state));
 });

@@ -27,7 +27,7 @@ body {
 .header {
   display: grid;
   grid-template-columns: 1fr 1fr 70px;
-  grid-template-rows: 50px 50px 30px;
+  grid-template-rows: 40px 40px 30px;
   gap: 0px 0px;
   grid-template-areas:
     "header-1 header-1 header-2"
@@ -79,9 +79,9 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  padding-top: 30px;
+  padding-top: 15px;
 
-  height: 230px;
+  height: 215px;
 
   background: url(images/sosedi_letom.jpg);
   background-repeat: no-repeat;
@@ -170,6 +170,11 @@ body {
   border-radius: 10px;
 }
 
+.loading {
+  color: red;
+  background-color: yellow;
+}
+
 .info{
   height: 90px;
 
@@ -177,12 +182,26 @@ body {
   background-color: #c5c6c6;
   text-align: center;
 
+  font-weight: bold;
   border-top: white thin solid;
+}
+
+.loader {
+  text-align: center;
+}
+
+.loader > img {
+  width: 26px;
+  height: 26px;
+}
+
+.hidden {
+  visibility: hidden;
 }
 
 @media screen and (max-width: 450px) {
   .header-1 { 
-    padding-top: 40px;
+    padding-top: 20px;
     font-size: 10vw;
   }
   .header-3 {
@@ -192,7 +211,7 @@ body {
 
 @media screen and (max-width: 375px) {
   .header-1 { 
-    padding-top: 50px;
+    padding-top: 20px;
     font-size: 12vw;
   }
   .header-3 {
