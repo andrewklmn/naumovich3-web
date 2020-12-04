@@ -38,6 +38,7 @@ const heaterModes = [
 
 const state = {
   heaterParams: {},
+  givenTemp: '',
 };
 
 const state_indexes = 'configRAM|configROM|currentMode|out_s0|litos_s1|mebel_s2|hot_s3|back_s4|outdoorTemp|ruslanTemp|fasmebTemp|heaterTemp|pompTemp|pompOff|heaterOff'.split("|");
@@ -59,7 +60,7 @@ const formatTemp = (heaterParams, parameterName) => {
 
 const setGivenTemp = (temp) => {
   //let tempOptions = givenTempSetter.querySelectorAll('option');
-  givenTempSetter.value = temp;  
+  state.givenTemp = givenTempSetter.value = temp;  
   givenTempSetter.disabled = false;
 }
 
@@ -123,8 +124,9 @@ const getheaterParams = (state)=> {
     });
 }
 
-const givenTempChangeHandler = (target) => {
-  if(target.value != '') {
+const givenTempChangeHandler = (target, {givenTemp}) => {
+  if(target.value != ''
+      && target.value != givenTemp ) {
     console.log(target.value);
   }
 }
@@ -132,5 +134,5 @@ const givenTempChangeHandler = (target) => {
 document.addEventListener('DOMContentLoaded',() => {
   drawTempSetter(MIN_GIVEN_TEMP, MAX_GIVEN_TEMP, GIVEN_TEMP_STEP);
   getheaterParams(state);
-  givenTempSetter.addEventListener('click',({target}) => givenTempChangeHandler(target));
+  givenTempSetter.addEventListener('click',({target}) => givenTempChangeHandler(target, state));
 });
