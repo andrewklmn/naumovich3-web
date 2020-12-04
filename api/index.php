@@ -4,6 +4,7 @@ const KOROVNIK_IP = '10.8.0.66';
 const COMMAND_URL = 'naumovich/command.php?command=';
 const API_URL = 'naumovich/api.php?command=';
 const GET_FILE_URL = 'naumovich/get_file.php?name=';
+const SET_TEMP = 'naumovich/set_temp.php?temp=';
 
 const PATH_OF_LOG_FILES = '/var/log';
 const LOG_FILENAME = 'naumovich3.log';
