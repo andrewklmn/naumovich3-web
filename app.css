@@ -163,6 +163,13 @@ body {
   border-bottom: white thin solid;
 }
 
+.given-temp {
+  font-size: 1.2em;
+  color: #16186f;
+
+  border-radius: 10px;
+}
+
 .info{
   height: 90px;
 

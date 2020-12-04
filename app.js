@@ -25,6 +25,11 @@ const apiCommands = {
   RUN_COMMAND: '?command=',
 };
 
+const MIN_GIVEN_TEMP = 5;
+const MAX_GIVEN_TEMP = 10;
+const GIVEN_TEMP_STEP = 0.2;
+
+
 const heaterModes = [
   'Off',
   'Eco',
@@ -47,38 +52,15 @@ const clearInfo = () => {
   }, 2000);
 }
 
-const getheaterParams = (state)=> {
-  showInfo('<span style="color:white;">ping</span>');
-  fetch(API_URL + apiCommands.GET_STATE)
-    .then(response => response.json())
-    .then((json) => {
-      const {stateOfHeater, givenTemp} = json; 
-      if (stateOfHeater!=null 
-            && stateOfHeater != "Bad request"
-            && stateOfHeater != "T") {
-        const state_values = stateOfHeater.split('|');
-        state_indexes.forEach((index_name, index)=>{
-          state.heaterParams[index_name] = state_values[index];
-        });  
-        drawheaterParams(state);
-        givenTempSetter.value = givenTemp;
-        showInfo('pong');
-        clearInfo();
-        setTimeout(()=>getheaterParams(state), refreshingPeriodInSec*1000 );
-      } else {
-        showInfo(stateOfHeater);
-        setTimeout(()=>getheaterParams(state), refreshingAfterError*1000 );
-      }
-    })
-    .catch(function() {
-      showInfo('<span style="color:red;">Network error!</span>');
-      setTimeout(()=>getheaterParams(state), refreshingAfterError*1000 );
-    });
-}
-
 const formatTemp = (heaterParams, parameterName) => {
   return (heaterParams[parameterName] > 0) 
             ? '+' + heaterParams[parameterName]:heaterParams[parameterName];
+}
+
+const setGivenTemp = (temp) => {
+  //let tempOptions = givenTempSetter.querySelectorAll('option');
+  givenTempSetter.value = temp;  
+  givenTempSetter.disabled = false;
 }
 
 const drawheaterParams = ({heaterParams})=> {
@@ -102,8 +84,53 @@ const drawheaterParams = ({heaterParams})=> {
   }
 }
 
-document.addEventListener('DOMContentLoaded',() => {
-  
-  getheaterParams(state);
+const drawTempSetter = (min, max, step) => {
+  for (let i=min; i<=max; i+=step ) {
+    const val = Math.round(i*10)/10;
+    const option = document.createElement('option');
+    option.value = val;
+    option.innerHTML = val;
+    givenTempSetter.appendChild(option);
+  }
+}
 
+const getheaterParams = (state)=> {
+  showInfo('<span style="color:white;">ping</span>');
+  fetch(API_URL + apiCommands.GET_STATE)
+    .then(response => response.json())
+    .then((json) => {
+      const {stateOfHeater, givenTemp} = json; 
+      if (stateOfHeater!=null 
+            && stateOfHeater != "Bad request"
+            && stateOfHeater != "T") {
+        const state_values = stateOfHeater.split('|');
+        state_indexes.forEach((index_name, index)=>{
+          state.heaterParams[index_name] = state_values[index];
+        });  
+        drawheaterParams(state);
+        setGivenTemp(givenTemp);
+        showInfo('pong');
+        clearInfo();
+        setTimeout(()=>getheaterParams(state), refreshingPeriodInSec*1000 );
+      } else {
+        showInfo(stateOfHeater);
+        setTimeout(()=>getheaterParams(state), refreshingAfterError*1000 );
+      }
+    })
+    .catch(function() {
+      showInfo('<span style="color:red;">Network error!</span>');
+      setTimeout(()=>getheaterParams(state), refreshingAfterError*1000 );
+    });
+}
+
+const givenTempChangeHandler = (target) => {
+  if(target.value != '') {
+    console.log(target.value);
+  }
+}
+
+document.addEventListener('DOMContentLoaded',() => {
+  drawTempSetter(MIN_GIVEN_TEMP, MAX_GIVEN_TEMP, GIVEN_TEMP_STEP);
+  getheaterParams(state);
+  givenTempSetter.addEventListener('click',({target}) => givenTempChangeHandler(target));
 });
