@@ -3,6 +3,7 @@
     $array['command'] = "week";
     
     $date = new DateTime(date());
+    $date->modify('+1 hour');
     $array['todayDate'] = $date->format('Y-m-d H:i:s');;
     $date->modify('-7 day');
     $array['startDate'] = $date->format('Y-m-d H:i:s');;
