@@ -19,6 +19,9 @@ const loaderImage = document.querySelector('.loader');
 const givenTempSetter = document.querySelector('.given-temp');
 const info = document.querySelector('.info');
 
+const todayTemp = document.querySelector('.today-temp');
+const weekTemp = document.querySelector('.week-temp');
+
 const apiCommands = {
   GET_STATE: '',
   GET_TODAYS_LOG: '?today',
@@ -40,6 +43,8 @@ const heaterModes = [
 const state = {
   heaterParams: {},
   givenTemp: '',
+  todayStates: [],
+  weekStates: [],
 };
 
 const state_indexes = 'configRAM|configROM|currentMode|out_s0|litos_s1|mebel_s2|hot_s3|back_s4|outdoorTemp|ruslanTemp|fasmebTemp|heaterTemp|pompTemp|pompOff|heaterOff'.split("|");
@@ -127,7 +132,7 @@ const getHeaterParams = (state)=> {
     .catch(function() {
       showInfo('<span style="color:red;">Network error!</span>');
       loaderImage.classList.add('hidden');
-      setTimeout(()=>getHeaterParams(state), refreshingAfterError*1000 );      
+      setTimeout(()=>getHeaterParams(state), refreshingAfterError*1000 );
     });
 }
 
@@ -143,12 +148,14 @@ const givenTempChangeHandler = (target, state) => {
   }
 }
 
-const drawDay = (fileContent) => {
+const drawDay = (fileContent, target) => {
   const OUTDOOR_COLOR = "gray";
   const ZERO_COLOR = "white";
   const FASMEB_COLOR = "darkblue";
   const RUSLAN_COLOR = "darkgreen";
   const POMP_COLOR = "orange";
+
+  target.innerHTML = "<h3>Last 24 hours temp:</h3>";
 
   const data = fileContent
                   .filter(data => data != '' )
@@ -167,8 +174,8 @@ const drawDay = (fileContent) => {
   const parseTime = d3.timeParse("%Y-%m-%dT%H:%M:%S");
 
   var margin = {top: 20, right: 20, bottom: 40, left: 50},
-    width = 460 - margin.left - margin.right,
-    height = 215 - margin.top - margin.bottom;
+    width = document.body.clientWidth - margin.left - margin.right,
+    height = 415 - margin.top - margin.bottom;
 
   // set the ranges
   var x = d3.scaleTime().range([0, width]);
@@ -201,7 +208,7 @@ const drawDay = (fileContent) => {
   // append the svg obgect to the body of the page
   // appends a 'group' element to 'svg'
   // moves the 'group' element to the top left margin
-  var svg = d3.select("body").append("svg")
+  var svg = d3.select(target).append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
   .attr("class", "svg")
@@ -211,7 +218,9 @@ const drawDay = (fileContent) => {
 
   // format the data
   data.forEach(function(d) {
-      d.date = parseTime(d.date);
+      const time = parseTime(d.date);
+      //d.date = time.setHours(time.getHours()-1);
+      d.date = time;
       d.outdoorTemp = +d.outdoorTemp;
       d.ruslanTemp = +d.ruslanTemp;
       d.fasmebTemp = +d.fasmebTemp;
@@ -274,7 +283,7 @@ const drawDay = (fileContent) => {
   // Add the X Axis
   svg.append("g")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x).tickFormat(d3.timeFormat("%H:%M")))
+      .call(d3.axisBottom(x).ticks(d3.timeHour.every((document.body.clientWidth<400)?3:2)).tickFormat(d3.timeFormat("%H:%M")))
       .selectAll("text")	
         .style("text-anchor", "center")
         .attr("dx", "0em");
@@ -289,7 +298,7 @@ const drawDay = (fileContent) => {
   .attr("x",0 - (height / 2))
   .attr("dy", "1em")
   .style("text-anchor", "middle")
-  .text("temperature,℃"); 
+  .text("temperature,C"); 
 
   svg.append("text")             
   .attr("transform",
@@ -312,7 +321,7 @@ const drawDay = (fileContent) => {
     svg.append("circle").attr("cx",startX).attr("cy", startY + i*15).attr("r", 4).style("fill", d[0])
     svg.append("text")
        .attr("x", startX + 10)
-       .attr("y", startY + i*15)
+       .attr("y", startY + i*15 + 4)
        .text(d[1])
        .style("font-size", "12px")
        .attr("alignment-baseline","middle")
@@ -340,43 +349,29 @@ const postNewTemp = (temp, state) => {
 };
 
 const getDayLog = (state)=> {
-  /*
-  showInfo('<span style="color:white;">ping</span>');
-  loaderImage.classList.remove('hidden');
-
-  fetch(API_URL + apiCommands.GET_STATE)
+  fetch(API_URL + apiCommands.GET_TODAYS_LOG)
     .then(response => response.json())
     .then((json) => {
-      const {stateOfHeater, givenTemp} = json; 
-      if (stateOfHeater!=null 
-            && stateOfHeater != "Bad request"
-            && stateOfHeater != "T") {
-        const state_values = stateOfHeater.split('|');
-        state_indexes.forEach((index_name, index)=>{
-          state.heaterParams[index_name] = state_values[index];
-        });  
-        drawheaterParams(state);
-        if (!givenTempSetter.classList.contains('loading')) setGivenTemp(givenTemp);
-        showInfo('pong');
-        clearInfo();
-        setTimeout(()=>getHeaterParams(state), refreshingPeriodInSec*1000 );
-      } else {
-        showInfo(stateOfHeater);
-        setTimeout(()=>getHeaterParams(state), refreshingAfterError*1000 );
-      }
-      loaderImage.classList.add('hidden');
+      const {records} = json;
+      if (records.length) {
+        state.todayStates = records;
+        drawDay(state.todayStates, todayTemp);
+      };
+      setTimeout(()=>getDayLog(state), refreshingAfterError*60*2*1000 );
     })
     .catch(function() {
-      showInfo('<span style="color:red;">Network error!</span>');
-      loaderImage.classList.add('hidden');
-      setTimeout(()=>getHeaterParams(state), refreshingAfterError*1000 );      
+      showInfo('<span style="color:red;">No connection to litos.kiev.ua!</span>');
+      setTimeout(()=>getDayLog(state), refreshingAfterError*1000 );
     });
-  */
 }
+
+window.addEventListener('resize',() => {
+  drawDay(state.todayStates, todayTemp);
+});
 
 document.addEventListener('DOMContentLoaded',() => {
   drawTempSetter(MIN_GIVEN_TEMP, MAX_GIVEN_TEMP, GIVEN_TEMP_STEP);
   getHeaterParams(state);
   givenTempSetter.addEventListener('change',({target}) => givenTempChangeHandler(target, state));
-
+  getDayLog(state);
 });
