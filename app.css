@@ -4,9 +4,10 @@ body {
   margin-left: auto;
   margin-right: auto;
 
-  font-family: 'Times New Roman', Times, serif;
   max-width: 500px;
-  min-height: 600px;
+  min-height: 500px;
+
+  font-family: 'Times New Roman', Times, serif;
 }
 
 .container {
@@ -176,10 +177,10 @@ body {
 }
 
 .info{
-  height: 90px;
+  height: calc(100vh - 524px);
 
   color: #444343;
-  background-color: #c5c6c6;
+  background-color: #aebdfd;
   text-align: center;
 
   font-weight: bold;
