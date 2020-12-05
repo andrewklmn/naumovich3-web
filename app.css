@@ -178,6 +178,7 @@ body {
 
 .info{
   height: calc(100vh - 524px);
+  min-height: 40px;
 
   color: #444343;
   background-color: #aebdfd;
