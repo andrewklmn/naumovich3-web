@@ -197,6 +197,10 @@ body {
   height: 36px;
 }
 
+.none {
+  display:none;
+}
+
 .hidden {
   visibility: hidden;
 }

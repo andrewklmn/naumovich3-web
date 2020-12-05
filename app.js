@@ -32,9 +32,9 @@ const GIVEN_TEMP_STEP = 0.2;
 
 
 const heaterModes = [
-  'Off',
-  'Eco',
-  'High',
+  'Off &#128077;',
+  'Eco &#127794;',
+  'High &#128184;',
 ];
 
 const state = {
