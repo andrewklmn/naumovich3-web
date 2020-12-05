@@ -220,11 +220,11 @@ body {
 
 .copyright {
   padding-top: 10px;
-
-  height: 50px;
+  padding-bottom: 40px;
+  
   background-color: #aebdfd;
 
-  font-size: 0.7em;
+  font-size: 0.8em;
   text-align: center;
   color: white;
 }

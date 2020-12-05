@@ -175,7 +175,7 @@ const drawDay = (fileContent, target, message, timeInterval, tickFormatString) =
 
   var margin = {top: 20, right: 20, bottom: 40, left: 50},
     width = document.body.clientWidth - margin.left - margin.right,
-    height = 375 - margin.top - margin.bottom;
+    height = 365 - margin.top - margin.bottom;
 
   // set the ranges
   var x = d3.scaleTime().range([0, width]);
@@ -355,6 +355,12 @@ const postNewTemp = (temp, state) => {
     });
 };
 
+const getTimeInterval = ()=>{
+   if (document.body.clientWidth<450) return 3;
+   if (document.body.clientWidth<800) return 2;
+   return 1;
+}
+
 const getDayLog = (state)=> {
   fetch(API_URL + apiCommands.GET_TODAYS_LOG)
     .then(response => response.json())
@@ -362,7 +368,7 @@ const getDayLog = (state)=> {
       const {records} = json;
       if (records.length) {
         state.todayStates = records;
-        drawDay(state.todayStates, todayTemp, 'Last 24 hours temp:', ((document.body.clientWidth<450)?3:1),"%H:%M");
+        drawDay(state.todayStates, todayTemp, 'Last 24 hours temp:', getTimeInterval(),"%H:%M");
       };
       setTimeout(()=>getDayLog(state), refreshingAfterError*60*2*1000 );
     })
@@ -390,7 +396,7 @@ const getWeekLog = (state)=> {
 }
 
 window.addEventListener('resize',() => {
-  drawDay(state.todayStates, todayTemp, 'Last 24 hours temp:', ((document.body.clientWidth<450)?3:1), "%H:%M");
+  drawDay(state.todayStates, todayTemp, 'Last 24 hours temp:', getTimeInterval(), "%H:%M");
   drawDay(state.weekStates, weekTemp, 'Last 7 days temp:', 24, "%d.%m");
 });
 
