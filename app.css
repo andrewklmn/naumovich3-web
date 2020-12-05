@@ -205,7 +205,8 @@ body {
   visibility: hidden;
 }
 
-.today-temp {
+.today-temp,
+.week-temp {
   padding-top: 10px;
   padding-bottom: 10px;
 
@@ -214,11 +215,6 @@ body {
 
   border-top: white thin solid;
   border-bottom: white thin solid;
-}
-
-.week-temp {
-  height: 215px;
-  background-color: #759a6e;
 }
 
 .copyright {

@@ -25,7 +25,7 @@ const weekTemp = document.querySelector('.week-temp');
 const apiCommands = {
   GET_STATE: '',
   GET_TODAYS_LOG: '?today',
-  GET_FULL_LOG: '?week',
+  GET_WEEK_LOG: '?week',
   SET_TEMP: '?temp=',
 };
 
@@ -148,14 +148,14 @@ const givenTempChangeHandler = (target, state) => {
   }
 }
 
-const drawDay = (fileContent, target) => {
+const drawDay = (fileContent, target, message, timeInterval, tickFormatString) => {
   const OUTDOOR_COLOR = "gray";
   const ZERO_COLOR = "white";
   const FASMEB_COLOR = "darkblue";
   const RUSLAN_COLOR = "darkgreen";
   const POMP_COLOR = "orange";
 
-  target.innerHTML = "<h3>Last 24 hours temp:</h3>";
+  target.innerHTML = "<h3>" + message + "</h3>";
 
   const data = fileContent
                   .filter(data => data != '' )
@@ -283,7 +283,9 @@ const drawDay = (fileContent, target) => {
   // Add the X Axis
   svg.append("g")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x).ticks(d3.timeHour.every((document.body.clientWidth<400)?3:2)).tickFormat(d3.timeFormat("%H:%M")))
+      .call(d3.axisBottom(x)
+      .ticks(d3.timeHour.every(timeInterval))
+      .tickFormat(d3.timeFormat(tickFormatString)))
       .selectAll("text")	
         .style("text-anchor", "center")
         .attr("dx", "0em");
@@ -355,7 +357,7 @@ const getDayLog = (state)=> {
       const {records} = json;
       if (records.length) {
         state.todayStates = records;
-        drawDay(state.todayStates, todayTemp);
+        drawDay(state.todayStates, todayTemp, 'Last 24 hours temp:', ((document.body.clientWidth<400)?3:2),"%H:%M");
       };
       setTimeout(()=>getDayLog(state), refreshingAfterError*60*2*1000 );
     })
@@ -365,8 +367,26 @@ const getDayLog = (state)=> {
     });
 }
 
+const getWeekLog = (state)=> {
+  fetch(API_URL + apiCommands.GET_WEEK_LOG)
+    .then(response => response.json())
+    .then((json) => {
+      const {records} = json;
+      if (records.length) {
+        state.weekStates = records;
+        drawDay(state.weekStates, weekTemp, 'Last 7 days temp:', 24, "%d.%m");
+      };
+      setTimeout(()=>getWeekLog(state), refreshingAfterError*60*2*1000 );
+    })
+    .catch(function() {
+      showInfo('<span style="color:red;">No connection to litos.kiev.ua!</span>');
+      setTimeout(()=>getWeekLog(state), refreshingAfterError*1000 );
+    });
+}
+
 window.addEventListener('resize',() => {
-  drawDay(state.todayStates, todayTemp);
+  drawDay(state.todayStates, todayTemp, 'Last 24 hours temp:', ((document.body.clientWidth<400)?3:2), "%H:%M");
+  drawDay(state.weekStates, weekTemp, 'Last 7 days temp:', 24, "%d.%m");
 });
 
 document.addEventListener('DOMContentLoaded',() => {
@@ -374,4 +394,5 @@ document.addEventListener('DOMContentLoaded',() => {
   getHeaterParams(state);
   givenTempSetter.addEventListener('change',({target}) => givenTempChangeHandler(target, state));
   getDayLog(state);
+  getWeekLog(state);
 });
