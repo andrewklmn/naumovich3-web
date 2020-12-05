@@ -235,13 +235,13 @@ const drawDay = (fileContent, target, message, timeInterval, tickFormatString) =
       d.ruslanTemp, 
       d.fasmebTemp,
       d.pompTemp
-    ) - 2; }), 
+    ) - 1; }), 
     d3.max(data, function(d) { return Math.max(
       d.outdoorTemp, 
       d.ruslanTemp, 
       d.fasmebTemp,
       d.pompTemp
-    ) + 5; })
+    ) + 2; })
   ]);
 
   // Add the valueline3 path.
@@ -292,7 +292,12 @@ const drawDay = (fileContent, target, message, timeInterval, tickFormatString) =
 
   // Add the Y Axis
   svg.append("g")
-      .call(d3.axisLeft(y));
+      .call(d3.axisLeft(y).tickFormat((d)=>{
+                                         if (d < 0) {
+                                             return "-" + (-d);  
+                                         };
+                                         return d;
+                                       }));
 
   svg.append("text")
   .attr("transform", "rotate(-90)")
