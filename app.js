@@ -183,7 +183,7 @@ const drawDay = (fileContent, target, message, timeInterval, tickFormatString) =
 
   var margin = {top: 20, right: 20, bottom: 40, left: 50},
     width = document.body.clientWidth - margin.left - margin.right,
-    height = 365 - margin.top - margin.bottom;
+    height = (window.innerHeight - 50) - margin.top - margin.bottom;
 
   // set the ranges
   var x = d3.scaleTime().range([0, width]);
@@ -252,6 +252,58 @@ const drawDay = (fileContent, target, message, timeInterval, tickFormatString) =
     ) + 2; })
   ]);
 
+  // Add the X Axis
+  svg.append("g")
+    .attr("class", "x-axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x)
+      .ticks(d3.timeHour.every(timeInterval))
+      .tickFormat(d3.timeFormat(tickFormatString)))
+    .selectAll("text")	
+      .style("text-anchor", "center")
+      .attr("dx", "0em");
+  
+  svg.selectAll("g.x-axis g.tick")
+    .append("line")
+    .classed("grid-line", true)
+    .attr("x1", 0)
+    .attr("y1", 0)
+    .attr("x2", 0)
+    .attr("y2", - (height));
+
+  // Add the Y Axis
+  svg.append("g")
+      .attr("class", "y-axis")
+      .call(d3.axisLeft(y).tickFormat((d)=>{
+                                         if (d < 0) {
+                                             return "-" + (-d);  
+                                         };
+                                         return d;
+                                       }));
+
+  svg.selectAll("g.y-axis g.tick")
+    .append("line")
+    .classed("grid-line", true)
+    .attr("x1", 0)
+    .attr("y1", 0)
+    .attr("x2", width)
+    .attr("y2", 0);
+
+  svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0 - margin.left + 5)
+    .attr("x",0 - (height / 2))
+    .attr("dy", "1em")
+    .style("text-anchor", "middle")
+    .text("temperature,C"); 
+
+  svg.append("text")             
+    .attr("transform",
+          "translate(" + (width/2) + " ," + 
+                        (height + margin.top + 15) + ")")
+    .style("text-anchor", "middle")
+    .text("time");  
+
   // Add the valueline3 path.
   svg.append("path")
       .data([data])
@@ -288,41 +340,9 @@ const drawDay = (fileContent, target, message, timeInterval, tickFormatString) =
       .style("stroke", FASMEB_COLOR)
       .attr("d", valueline2);
 
-  // Add the X Axis
-  svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x)
-      .ticks(d3.timeHour.every(timeInterval))
-      .tickFormat(d3.timeFormat(tickFormatString)))
-      .selectAll("text")	
-        .style("text-anchor", "center")
-        .attr("dx", "0em");
 
-  // Add the Y Axis
-  svg.append("g")
-      .call(d3.axisLeft(y).tickFormat((d)=>{
-                                         if (d < 0) {
-                                             return "-" + (-d);  
-                                         };
-                                         return d;
-                                       }));
 
-  svg.append("text")
-  .attr("transform", "rotate(-90)")
-  .attr("y", 0 - margin.left + 5)
-  .attr("x",0 - (height / 2))
-  .attr("dy", "1em")
-  .style("text-anchor", "middle")
-  .text("temperature,C"); 
-
-  svg.append("text")             
-  .attr("transform",
-        "translate(" + (width/2) + " ," + 
-                       (height + margin.top + 15) + ")")
-  .style("text-anchor", "middle")
-  .text("time");
-
-  const startX = width - 100;
+  const startX = width - 60;
   const startY = 0;
 
   const legend = [
@@ -397,10 +417,12 @@ const getWeekLog = (state)=> {
       };
       setTimeout(()=>getWeekLog(state), refreshingAfterError*60*2*1000 );
     })
+    /*
     .catch(function() {
       showInfo('<span style="color:red;">No connection to litos.kiev.ua!</span>');
       setTimeout(()=>getWeekLog(state), refreshingAfterError*1000 );
     });
+    */
 }
 
 window.addEventListener('resize',() => {

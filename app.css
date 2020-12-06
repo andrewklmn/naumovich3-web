@@ -235,6 +235,12 @@ body {
   stroke-width: 2px;
 }
 
+.grid-line {
+  fill: none;
+  stroke: #8888ff;
+  stroke-width: 1px;
+}
+
 @media screen and (max-width: 450px) {
   .header-1 { 
     padding-top: 20px;
