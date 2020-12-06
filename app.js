@@ -9,7 +9,7 @@ if (location.protocol !== 'https:') {
 const API_URL = url;
 
 const refreshingPeriodInSec = 15;
-const refreshingAfterError = 1;
+const refreshingAfterError = 2;
 
 const renterSection = document.querySelector('.renters-temp');
 const fasmebTemp = renterSection.querySelector('.fasmeb-temp');
@@ -398,7 +398,7 @@ const getDayLog = (state)=> {
         state.todayStates = records;
         drawDay(state.todayStates, todayTemp, 'Last 24 hours temp:', getTimeInterval(),"%H:%M");
       };
-      setTimeout(()=>getDayLog(state), refreshingAfterError*60*2*1000 );
+      setTimeout(()=>getDayLog(state), refreshingAfterError*60*5*1000 );
     })
     .catch(function() {
       showInfo('<span style="color:red;">No connection to litos.kiev.ua!</span>');
@@ -415,14 +415,12 @@ const getWeekLog = (state)=> {
         state.weekStates = records;
         drawDay(state.weekStates, weekTemp, 'Last 7 days temp:', 24, "%d.%m");
       };
-      setTimeout(()=>getWeekLog(state), refreshingAfterError*60*2*1000 );
+      setTimeout(()=>getWeekLog(state), refreshingAfterError*60*5*1000 );
     })
-    /*
     .catch(function() {
       showInfo('<span style="color:red;">No connection to litos.kiev.ua!</span>');
       setTimeout(()=>getWeekLog(state), refreshingAfterError*1000 );
     });
-    */
 }
 
 window.addEventListener('resize',() => {
