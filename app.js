@@ -1,4 +1,12 @@
-const API_URL = 'http://litos.kiev.ua/naumovich/api/';
+let url;
+
+if (location.protocol !== 'https:') {
+    url = 'http://litos.kiev.ua/naumovich/api/'
+} else {
+    url = 'https://litos.kiev.ua/naumovich/api/';
+};
+
+const API_URL = url;
 
 const refreshingPeriodInSec = 15;
 const refreshingAfterError = 1;
