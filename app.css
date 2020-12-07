@@ -29,14 +29,13 @@ body {
 .header {
   display: grid;
   grid-template-columns: 1fr 1fr 70px;
-  grid-template-rows: 40px 40px 30px;
+  grid-template-rows: 45px 45px 45px;
   gap: 0px 0px;
   grid-template-areas:
     "header-1 header-1 header-2"
     "header-1 header-1 header-2"
     "header-3 header-3 header-2";
-    align-content: center;
-  height: 150px;
+  align-content: center;
   background-color: #aebdfd;
 }
 .header-1 { 
@@ -47,8 +46,6 @@ body {
   padding-left: 10px;
   
   font-size: 60px;
-
-  border-bottom: thin solid white;
   text-align: left;
   color: #16186f;
 }
@@ -72,9 +69,8 @@ body {
   font-size: 26px;
   text-align: left;
   letter-spacing: 0.3em;
-
+  border-top: thin solid white;
   color: #16186f;
-  overflow: hidden;
 }
 
 .renters-temp {
@@ -83,7 +79,7 @@ body {
   justify-content: space-around;
   padding-top: 15px;
 
-  height: 215px;
+  height: 210px;
 
   background: url(images/sosedi_letom.jpg);
   background-repeat: no-repeat;
@@ -157,7 +153,7 @@ body {
   flex-wrap: wrap;
   padding: 10px;
 
-  font-size: 1.2em;
+  font-size: 1em;
   font-weight: bold;
   color: #16186f;
 
@@ -167,10 +163,12 @@ body {
 
 .time,
 .given-temp {
-  font-size: 1.2em;
+  height: 46px;
+  width: 56px;
+  
+  font-size: 1.4em;
   color: #16186f;
-
-  text-align: center;
+  text-align-last: center;
   border-radius: 10px;
 }
 
@@ -234,6 +232,7 @@ body {
   padding-bottom: 30px;
 
   border-bottom: white thin solid;
+  font-size: 0.8em;
 }
 
 .copyright {
