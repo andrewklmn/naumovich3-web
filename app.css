@@ -165,11 +165,17 @@ body {
   border-bottom: white thin solid;
 }
 
+.time,
 .given-temp {
   font-size: 1.2em;
   color: #16186f;
 
+  text-align: right;
   border-radius: 10px;
+}
+
+.time {
+  width: 40px;
 }
 
 .loading {
@@ -216,6 +222,21 @@ body {
 
   border-top: white thin solid;
   border-bottom: white thin solid;
+}
+
+.setup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+
+  padding-bottom: 30px;
+
+  border-bottom: white thin solid;
+}
+
+.time-minutes {
+  font-size: 1.2em;
 }
 
 .copyright {

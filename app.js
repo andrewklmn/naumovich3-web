@@ -21,22 +21,36 @@ const pompTemp = stateSection.querySelector('.pomp-temp');
 const heaterIcon = stateSection.querySelector('.heater-icon');
 const heaterTemp = stateSection.querySelector('.heater-temp');
 const outdoorTemp = stateSection.querySelector('.outdoor-temp');
-const setupSection = document.querySelector('.setup');
 
 const modeValue = document.querySelector('.mode-value');
 const loaderImage = document.querySelector('.loader');
 const givenTempSetter = document.querySelector('.given-temp');
+
 const info = document.querySelector('.info');
 
 const todayTemp = document.querySelector('.today-temp');
 const weekTemp = document.querySelector('.week-temp');
+
+const setupSection = document.querySelector('.setup');
+const nightTimeSetter = setupSection.querySelector('.night-time');
+const dayTimeSetter = setupSection.querySelector('.day-time');
+const nightTempSetter = setupSection.querySelector('.night-temp');
+const dayTempSetter = setupSection.querySelector('.day-temp');
+const weekendTempSetter = setupSection.querySelector('.weekend-temp');
 
 const apiCommands = {
   GET_STATE: '',
   GET_TODAYS_LOG: '?today',
   GET_WEEK_LOG: '?week',
   SET_TEMP: '?temp=',
+  GET_CONFIG: '?config',
 };
+
+const MIN_NIGHT_START_TIME = '13';
+const MAX_NIGHT_START_TIME = '23';
+
+const MIN_DAY_START_TIME = '0';
+const MAX_DAY_START_TIME = '12';
 
 const MIN_GIVEN_TEMP = 5;
 const MAX_GIVEN_TEMP = 10;
@@ -54,6 +68,7 @@ const state = {
   givenTemp: '',
   todayStates: [],
   weekStates: [],
+  config: {},
 };
 
 const state_indexes = 'configRAM|configROM|currentMode|out_s0|litos_s1|mebel_s2|hot_s3|back_s4|outdoorTemp|ruslanTemp|fasmebTemp|heaterTemp|pompTemp|pompOff|heaterOff'.split("|");
@@ -424,17 +439,57 @@ const getWeekLog = (state)=> {
     });
 }
 
-window.addEventListener('resize',() => {
-  drawDay(state.todayStates, todayTemp, 'Last 24 hours temp:', getTimeInterval(), "%H:%M");
-  drawDay(state.weekStates, weekTemp, 'Last 7 days temp:', 24, "%d.%m");
-});
+const getConfig = (state) => {
+  const {config} = state;
+  fetch(API_URL + apiCommands.GET_CONFIG)
+    .then(response => response.json())
+    .then((json) => {
+      if (json.config) {
+        const { 
+          nightTime, 
+          nightTemp,
+          dayTime,
+          dayTemp,
+          weekendTemp, 
+        } = json.config;
+
+        nightTimeSetter.min = MIN_NIGHT_START_TIME;
+        nightTimeSetter.max = MAX_NIGHT_START_TIME;  
+        nightTimeSetter.value = config.nightTime = nightTime;
+        nightTempSetter.value = config.nightTemp = nightTemp;
+        nightTempSetter.disabled = false;
+
+        dayTimeSetter.min = MIN_DAY_START_TIME;
+        dayTimeSetter.max = MAX_DAY_START_TIME;  
+        dayTimeSetter.value = config.dayTime = dayTime;
+        dayTempSetter.value = config.dayTemp = dayTemp;
+        dayTempSetter.disabled = false;
+
+        weekendTempSetter.value = config.weekendTemp = weekendTemp;
+        weekendTempSetter.disabled = false;
+      }
+      setTimeout(()=>getConfig(state), refreshingAfterError*60*5*1000 );
+    })
+    /*
+    .catch(function() {
+      showInfo('<span style="color:red;">No connection to litos.kiev.ua!</span>');
+      //setTimeout(()=>getConfig(state), refreshingAfterError*1000 );
+    });
+    */
+}
 
 document.addEventListener('DOMContentLoaded',() => {
   document.querySelectorAll('.given-temp')
     .forEach(setter => drawTempSetter(MIN_GIVEN_TEMP, MAX_GIVEN_TEMP, GIVEN_TEMP_STEP, setter));
 
   getHeaterParams(state);
-  givenTempSetter.addEventListener('change',({target}) => givenTempChangeHandler(target, state));
   getDayLog(state);
   getWeekLog(state);
+  getConfig(state);
+  
+  givenTempSetter.addEventListener('change',({target}) => givenTempChangeHandler(target, state));
+  window.addEventListener('resize',() => {
+    drawDay(state.todayStates, todayTemp, 'Last 24 hours temp:', getTimeInterval(), "%H:%M");
+    drawDay(state.weekStates, weekTemp, 'Last 7 days temp:', 24, "%d.%m");
+  });
 });
