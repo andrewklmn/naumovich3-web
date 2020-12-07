@@ -11,7 +11,7 @@ function get_controller_names_array($array) {
         'today',
         'temp',
         'config',
-        'setup',
+        'set_config',
     ];
     
     return $commands;

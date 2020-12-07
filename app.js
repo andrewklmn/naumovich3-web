@@ -37,6 +37,7 @@ const dayTimeSetter = setupSection.querySelector('.day-time');
 const nightTempSetter = setupSection.querySelector('.night-temp');
 const dayTempSetter = setupSection.querySelector('.day-temp');
 const weekendTempSetter = setupSection.querySelector('.weekend-temp');
+const setupFields = setupSection.querySelectorAll('.data');
 
 const apiCommands = {
   GET_STATE: '',
@@ -44,6 +45,7 @@ const apiCommands = {
   GET_WEEK_LOG: '?week',
   SET_TEMP: '?temp=',
   GET_CONFIG: '?config',
+  SET_CONFIG: '?set_config=',
 };
 
 const MIN_NIGHT_START_TIME = '13';
@@ -470,12 +472,22 @@ const getConfig = (state) => {
       }
       setTimeout(()=>getConfig(state), refreshingAfterError*60*5*1000 );
     })
-    /*
     .catch(function() {
       showInfo('<span style="color:red;">No connection to litos.kiev.ua!</span>');
       //setTimeout(()=>getConfig(state), refreshingAfterError*1000 );
     });
-    */
+}
+
+const setConfig = (state) => {
+  const data = [...setupFields].map((field) => field.value).join('|');
+  console.log(data);
+  fetch(API_URL + apiCommands.SET_CONFIG + data)
+    .then(response => {
+      console.log(response);
+    })
+    .catch(function() {
+
+    })
 }
 
 document.addEventListener('DOMContentLoaded',() => {
@@ -488,6 +500,8 @@ document.addEventListener('DOMContentLoaded',() => {
   getConfig(state);
   
   givenTempSetter.addEventListener('change',({target}) => givenTempChangeHandler(target, state));
+  setupSection.addEventListener('change',() => setConfig(state));
+  
   window.addEventListener('resize',() => {
     drawDay(state.todayStates, todayTemp, 'Last 24 hours temp:', getTimeInterval(), "%H:%M");
     drawDay(state.weekStates, weekTemp, 'Last 7 days temp:', 24, "%d.%m");
