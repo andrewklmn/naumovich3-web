@@ -471,6 +471,16 @@ const getWeekLog = (state)=> {
     });
 }
 
+const drawTimeSetter = (target, startTime, stopTime) => {
+    target.innerHTML = '';
+  for (let i = startTime; i <= stopTime; i++) {
+    const option = document.createElement('option');
+    option.innerHTML = i + ':00';
+    option.value = i;
+    target.appendChild(option);    
+  }
+}
+
 const getConfig = (state) => {
   const {config} = state;
   fetch(API_URL + apiCommands.GET_CONFIG)
@@ -485,15 +495,15 @@ const getConfig = (state) => {
           weekendTemp, 
         } = json.config;
 
-        nightTimeSetter.min = MIN_NIGHT_START_TIME;
-        nightTimeSetter.max = MAX_NIGHT_START_TIME;  
+        drawTimeSetter(nightTimeSetter,MIN_NIGHT_START_TIME, MAX_NIGHT_START_TIME);
         nightTimeSetter.value = config.nightTime = nightTime;
+        nightTimeSetter.disabled = false;
         nightTempSetter.value = config.nightTemp = nightTemp;
         nightTempSetter.disabled = false;
 
-        dayTimeSetter.min = MIN_DAY_START_TIME;
-        dayTimeSetter.max = MAX_DAY_START_TIME;  
+        drawTimeSetter(dayTimeSetter,MIN_DAY_START_TIME, MAX_DAY_START_TIME);
         dayTimeSetter.value = config.dayTime = dayTime;
+        dayTimeSetter.disabled = false;
         dayTempSetter.value = config.dayTemp = dayTemp;
         dayTempSetter.disabled = false;
 
@@ -502,9 +512,11 @@ const getConfig = (state) => {
       }
       setTimeout(()=>getConfig(state), refreshingAfterError*60*5*1000 );
     })
+    /*
     .catch(function() {
       showInfo('<span style="color:red;">No connection to litos.kiev.ua!</span>');
     });
+    */
 }
 
 const setConfig = (target, state) => {
@@ -535,7 +547,7 @@ const setConfig = (target, state) => {
     })
     .catch(function() {
       showInfo('<span style="color:red;">No connection to litos.kiev.ua!</span>');
-    })
+    });
 }
 
 document.addEventListener('DOMContentLoaded',() => {

@@ -170,12 +170,12 @@ body {
   font-size: 1.2em;
   color: #16186f;
 
-  text-align: right;
+  text-align: center;
   border-radius: 10px;
 }
 
 .time {
-  width: 40px;
+  width: 80px;
 }
 
 .loading {
@@ -234,10 +234,6 @@ body {
   padding-bottom: 30px;
 
   border-bottom: white thin solid;
-}
-
-.time-minutes {
-  font-size: 1.2em;
 }
 
 .copyright {
