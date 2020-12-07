@@ -5,6 +5,8 @@ const COMMAND_URL = 'naumovich/command.php?command=';
 const API_URL = 'naumovich/api.php?command=';
 const GET_FILE_URL = 'naumovich/get_file.php?name=';
 const SET_TEMP = 'naumovich/set_temp.php?temp=';
+const GET_CONFIG = 'naumovich/config.json';
+const SET_CONFIG = 'naumovich/set_config.php?config=';
 
 const PATH_OF_LOG_FILES = '/var/log';
 const LOG_FILENAME = 'naumovich3.log';

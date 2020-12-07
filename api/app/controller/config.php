@@ -9,13 +9,9 @@
     $dayModeGivenTemp = 9.2;
     
     $weekendModeGivenTemp = 5;
-            
-    $array['config'] = [
-        'nightTime' => $nightModeStartTime,
-        'nightTemp' => $nightModeGivenTemp,
-        'dayTime' => $dayModeStartTime,
-        'dayTemp' => $dayModeGivenTemp,
-        'weekendTemp' => $weekendModeGivenTemp,
-    ];
+
+    $url = 'http://'.KOROVNIK_IP.'/'.GET_CONFIG;
+    $array['url'] = $url;
     
+    $array['config'] = json_decode(file_get_contents($url));
     
