@@ -21,6 +21,7 @@ const pompTemp = stateSection.querySelector('.pomp-temp');
 const heaterIcon = stateSection.querySelector('.heater-icon');
 const heaterTemp = stateSection.querySelector('.heater-temp');
 const outdoorTemp = stateSection.querySelector('.outdoor-temp');
+const setupSection = document.querySelector('.setup');
 
 const modeValue = document.querySelector('.mode-value');
 const loaderImage = document.querySelector('.loader');
@@ -101,13 +102,13 @@ const drawheaterParams = ({heaterParams})=> {
   }
 }
 
-const drawTempSetter = (min, max, step) => {
+const drawTempSetter = (min, max, step, target) => {
   for (let i=min; i<=max; i+=step ) {
     const val = Math.round(i*10)/10;
     const option = document.createElement('option');
     option.value = val;
     option.innerHTML = val;
-    givenTempSetter.appendChild(option);
+    target.appendChild(option);
   }
 }
 
@@ -429,7 +430,9 @@ window.addEventListener('resize',() => {
 });
 
 document.addEventListener('DOMContentLoaded',() => {
-  drawTempSetter(MIN_GIVEN_TEMP, MAX_GIVEN_TEMP, GIVEN_TEMP_STEP);
+  document.querySelectorAll('.given-temp')
+    .forEach(setter => drawTempSetter(MIN_GIVEN_TEMP, MAX_GIVEN_TEMP, GIVEN_TEMP_STEP, setter));
+
   getHeaterParams(state);
   givenTempSetter.addEventListener('change',({target}) => givenTempChangeHandler(target, state));
   getDayLog(state);
