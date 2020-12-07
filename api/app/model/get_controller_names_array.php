@@ -10,8 +10,9 @@ function get_controller_names_array($array) {
         'week',
         'today',
         'temp',
+        'config',
+        'setup',
     ];
     
     return $commands;
 }
-
