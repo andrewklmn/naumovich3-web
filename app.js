@@ -479,14 +479,29 @@ const getConfig = (state) => {
 
 const setConfig = (target, state) => {
   const data = [...setupFields].map((field) => field.value).join('|');
+  const {config} = state;
   target.classList.add('loading');
   showInfo('...send new config...');
   fetch(API_URL + apiCommands.SET_CONFIG + data)
   .then(response => response.json())
   .then((json) => {
       target.classList.remove('loading');
+      if(json.answer != 'New config set') {
+        // redraw setup fields from state
+        nightTimeSetter.value = config.nightTime;
+        nightTempSetter.value = config.nightTemp;
+        dayTimeSetter.value = config.dayTime;
+        dayTempSetter.value = config.dayTemp;
+        weekendTempSetter.value = config.weekendTemp;
+      } else {
+        config.nightTime = nightTimeSetter.value;
+        config.nightTemp = nightTempSetter.value;
+        config.dayTime = dayTimeSetter.value;
+        config.dayTemp = dayTempSetter.value;
+        config.weekendTemp = weekendTempSetter.value;
+      };
       showInfo(json.answer);
-      clearInfo();
+      clearInfo();          
     })
     .catch(function() {
       showInfo('<span style="color:red;">No connection to litos.kiev.ua!</span>');
