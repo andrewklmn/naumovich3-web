@@ -23,6 +23,9 @@ const heaterTemp = stateSection.querySelector('.heater-temp');
 const outdoorTemp = stateSection.querySelector('.outdoor-temp');
 
 const modeValue = document.querySelector('.mode-value');
+const modeIcon = document.querySelector('.mode-icon');
+const weatherIcon = document.querySelector('.weather-icon');
+
 const loaderImage = document.querySelector('.loader');
 const givenTempSetter = document.querySelector('.given-temp');
 
@@ -60,10 +63,23 @@ const GIVEN_TEMP_STEP = 0.2;
 
 
 const heaterModes = [
-  'Off &#128077;',
-  'Eco &#127794;',
-  'High &#128184;',
+  'Off',
+  'Eco',
+  'High',
 ];
+
+const heaterIcons = [
+  '&#128077;',
+  '&#127794;',
+  '&#128184;',
+];
+
+const weatherIcons = {
+    HOT: '&#127774;',
+    NORM: '&#127783;',
+    COLD: '&#10052;',
+    SNOW: '&#129398;',
+};
 
 const state = {
   heaterParams: {},
@@ -104,15 +120,27 @@ const drawheaterParams = ({heaterParams})=> {
   pompTemp.innerHTML = formatTemp(heaterParams, 'pompTemp');
   heaterTemp.innerHTML = formatTemp(heaterParams, 'heaterTemp');
   outdoorTemp.innerHTML = formatTemp(heaterParams, 'outdoorTemp');
+  
   modeValue.innerHTML = heaterModes[heaterParams.currentMode];
+  modeIcon.innerHTML = heaterIcons[heaterParams.currentMode];
+  
+  if (parseFloat(heaterParams.outdoorTemp) < -5) {
+    weatherIcon.innerHTML = weatherIcons.SNOW;
+  } else if (parseFloat(heaterParams.outdoorTemp) < 0) {
+    weatherIcon.innerHTML = weatherIcons.COLD;
+  } else if (parseFloat(heaterParams.outdoorTemp) < 7) {
+    weatherIcon.innerHTML = weatherIcons.NORM;
+  } else {
+    weatherIcon.innerHTML = weatherIcons.HOT;
+  };
 
-  if (heaterParams.pompOff == '0') {
+  if (heaterParams.pompOff === '0') {
     pompIcon.classList.add('on');
   } else {
     pompIcon.classList.remove('on');
   }
   
-  if (heaterParams.heaterOff == '0') {
+  if (heaterParams.heaterOff === '0') {
     heaterIcon.classList.add('on');
   } else {
     heaterIcon.classList.remove('on');
@@ -155,11 +183,13 @@ const getHeaterParams = (state)=> {
       }
       loaderImage.classList.add('hidden');
     })
+    /*
     .catch(function() {
       showInfo('<span style="color:red;">Network error!</span>');
       loaderImage.classList.add('hidden');
       setTimeout(()=>getHeaterParams(state), refreshingAfterError*1000 );
     });
+    */
 }
 
 const givenTempChangeHandler = (target, state) => {

@@ -263,6 +263,13 @@ body {
   stroke-width: 1px;
 }
 
+.mode-icon {
+    font-size: 1.5em;
+}
+.weather-icon {
+    font-size: 2.5em;
+}
+
 @media screen and (max-width: 450px) {
   .header-1 { 
     padding-top: 20px;
