@@ -193,6 +193,7 @@ body {
 
   font-weight: bold;
   border-top: white thin solid;
+  border-bottom: white thin solid;
 }
 
 .loader {

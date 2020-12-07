@@ -26,7 +26,7 @@ const modeValue = document.querySelector('.mode-value');
 const loaderImage = document.querySelector('.loader');
 const givenTempSetter = document.querySelector('.given-temp');
 
-const info = document.querySelector('.info');
+const info = document.querySelectorAll('.info');
 
 const todayTemp = document.querySelector('.today-temp');
 const weekTemp = document.querySelector('.week-temp');
@@ -76,12 +76,12 @@ const state = {
 const state_indexes = 'configRAM|configROM|currentMode|out_s0|litos_s1|mebel_s2|hot_s3|back_s4|outdoorTemp|ruslanTemp|fasmebTemp|heaterTemp|pompTemp|pompOff|heaterOff'.split("|");
 
 const showInfo = (text)=> {
-  info.innerHTML = text;
+  info.forEach((div)=>div.innerHTML = text );
 }
 
 const clearInfo = () => {
   setTimeout(()=>{
-    info.innerHTML = '';
+    info.forEach((div)=>div.innerHTML = '' );
   }, 2000);
 }
 
@@ -474,19 +474,22 @@ const getConfig = (state) => {
     })
     .catch(function() {
       showInfo('<span style="color:red;">No connection to litos.kiev.ua!</span>');
-      //setTimeout(()=>getConfig(state), refreshingAfterError*1000 );
     });
 }
 
-const setConfig = (state) => {
+const setConfig = (target, state) => {
   const data = [...setupFields].map((field) => field.value).join('|');
-  console.log(data);
+  target.classList.add('loading');
+  showInfo('...send new config...');
   fetch(API_URL + apiCommands.SET_CONFIG + data)
-    .then(response => {
-      console.log(response);
+  .then(response => response.json())
+  .then((json) => {
+      target.classList.remove('loading');
+      showInfo(json.answer);
+      clearInfo();
     })
     .catch(function() {
-
+      showInfo('<span style="color:red;">No connection to litos.kiev.ua!</span>');
     })
 }
 
@@ -500,7 +503,7 @@ document.addEventListener('DOMContentLoaded',() => {
   getConfig(state);
   
   givenTempSetter.addEventListener('change',({target}) => givenTempChangeHandler(target, state));
-  setupSection.addEventListener('change',() => setConfig(state));
+  setupSection.addEventListener('change',({target}) => setConfig(target, state));
   
   window.addEventListener('resize',() => {
     drawDay(state.todayStates, todayTemp, 'Last 24 hours temp:', getTimeInterval(), "%H:%M");
