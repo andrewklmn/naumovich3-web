@@ -274,7 +274,7 @@ const drawDay = (fileContent, target, message, timeInterval, tickFormatString) =
       d.fasmebTemp = +d.fasmebTemp;
       d.mode = +d.mode;
   });
-
+  
   // Scale the range of the data
   x.domain(d3.extent(data, function(d) { return d.date; }));
   y.domain([
@@ -344,14 +344,20 @@ const drawDay = (fileContent, target, message, timeInterval, tickFormatString) =
     .style("text-anchor", "middle")
     .text("time");  
 
+  const minTemp = d3.min(data.map((d)=>{
+    return d.outdoorTemp;
+  }));
+  
+  if (minTemp < 0) {
   // Add the valueline3 path.
-  svg.append("path")
-      .data([data])
-      .attr("class", "line")
-      .style("stroke-dasharray", ("10,3"))
-      .style("stroke", ZERO_COLOR)
-      .attr("d", zeroTemp);
-
+    svg.append("path")
+        .data([data])
+        .attr("class", "line")
+        .style("stroke-dasharray", ("10,3"))
+        .style("stroke", ZERO_COLOR)
+        .attr("d", zeroTemp);
+  };
+  
   // Add the valueline path.
   svg.append("path")
       .data([data])
