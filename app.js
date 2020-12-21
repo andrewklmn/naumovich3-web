@@ -53,6 +53,8 @@ const MIN_GIVEN_TEMP = 5;
 const MAX_GIVEN_TEMP = 10;
 const GIVEN_TEMP_STEP = 0.2;
 
+const MIN_TEMP_PADDING = 1;
+const MAX_TEMP_PADDING = 2;
 
 const heaterModes = [
   'Off',
@@ -283,13 +285,13 @@ const drawDay = (fileContent, target, message, timeInterval, tickFormatString) =
       d.ruslanTemp, 
       d.fasmebTemp,
       d.pompTemp
-    ) - 1; }), 
+    ) - MIN_TEMP_PADDING; }), 
     d3.max(data, function(d) { return Math.max(
       d.outdoorTemp, 
       d.ruslanTemp, 
       d.fasmebTemp,
       d.pompTemp
-    ) + 2; })
+    ) + MAX_TEMP_PADDING; })
   ]);
 
   // Add the X Axis
@@ -346,7 +348,7 @@ const drawDay = (fileContent, target, message, timeInterval, tickFormatString) =
 
   const minTemp = d3.min(data.map((d)=>{
     return d.outdoorTemp;
-  }));
+  })) - MIN_TEMP_PADDING;
   
   if (minTemp < 0) {
   // Add the valueline3 path.
